@@ -36,10 +36,10 @@ private fun humanReadableByteCountBin(bytes: Long): String? {
 private fun BaseNode.stringify() = String.format(
     "%s - %s (%.0f%%) from %s to %s",
     name,
-    humanReadableByteCountBin(oldSize.toLong() - size),
-    (1.0f - size.toFloat() / oldSize) * 100.0f,
-    humanReadableByteCountBin(oldSize.toLong()),
-    humanReadableByteCountBin(size.toLong())
+    humanReadableByteCountBin(originalSize.toLong() - shrankSize),
+    (1.0f - shrankSize.toFloat() / originalSize) * 100.0f,
+    humanReadableByteCountBin(originalSize.toLong()),
+    humanReadableByteCountBin(shrankSize.toLong())
 )
 
 fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
