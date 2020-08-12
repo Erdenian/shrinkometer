@@ -10,10 +10,6 @@
     opacity: 0;
 }
 
-.css-treeview {
-    font: normal 18px "Segoe UI", Arial, Sans-serif;
-}
-
 .css-treeview input + label + ul {
     margin: 0 0 0 22px;
 }
@@ -26,12 +22,6 @@
 .css-treeview label::before {
     cursor: pointer;
 }
-
-/* .css-treeview input:disabled + label
-{
-    cursor: default;
-    opacity: .6;
-} */
 
 .css-treeview input:checked:not(:disabled) ~ ul {
     display: block;
