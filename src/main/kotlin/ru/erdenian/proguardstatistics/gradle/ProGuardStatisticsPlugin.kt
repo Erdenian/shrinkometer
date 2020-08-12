@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics
+package ru.erdenian.proguardstatistics.gradle
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant

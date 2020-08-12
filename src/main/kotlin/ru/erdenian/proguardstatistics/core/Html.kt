@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics
+package ru.erdenian.proguardstatistics.core
 
 import kotlinx.html.body
 import kotlinx.html.checkBoxInput

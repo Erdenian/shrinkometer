@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics
+package ru.erdenian.proguardstatistics.core
 
 interface BaseNode {
     val name: String

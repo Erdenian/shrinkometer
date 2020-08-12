@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics
+package ru.erdenian.proguardstatistics.core
 
 import java.io.Reader
 import java.util.LinkedList

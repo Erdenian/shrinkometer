@@ -1,10 +1,12 @@
-package ru.erdenian.proguardstatistics
+package ru.erdenian.proguardstatistics.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.InputChanges
+import ru.erdenian.proguardstatistics.core.appendStructureHtml
+import ru.erdenian.proguardstatistics.core.readAndCompare
 import java.io.File
 import java.io.FileWriter
 
@@ -37,6 +39,6 @@ open class CalculateProGuardStatisticsTask : DefaultTask() {
             execAnalyzer(releaseApkPath!!, "--defined-only --proguard-mappings $mappingFilePath")
         )
 
-        FileWriter(reportFilePath).use { it.appendStructureHtml(result) }
+        FileWriter(reportFilePath!!).use { it.appendStructureHtml(result) }
     }
 }
