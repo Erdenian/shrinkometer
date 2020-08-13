@@ -30,7 +30,8 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
                 installTools()
                 apkAnalyzer = findAnalyzer(bin)
             }
-            checkNotNull(apkAnalyzer) { "Could not find apkanalyzer executable" }
+
+            apkAnalyzer ?: throw GradleException("Could not find apkanalyzer executable")
         }
 
         val pairFounder = DebugReleasePairFounder({ debug, release ->
@@ -44,7 +45,7 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
 
                 task.debugApkFile = debug.outputs.single().outputFile
                 task.releaseApkFile = release.outputs.single().outputFile
-                task.mappingFile = release.mappingFileProvider.get().singleFile
+                task.mappingFile = if (release.buildType.isMinifyEnabled) release.mappingFileProvider.get().singleFile else null
 
                 task.dependsOn(
                     "assemble${capitalizedFlavorName}Debug",
@@ -74,9 +75,9 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
             if (previous == null) {
                 map[flavorName] = variant
             } else {
-                check(previous.buildType.name != buildTypeName) {
+                if (previous.buildType.name == buildTypeName) throw GradleException(
                     "More than one variant with build type '$buildTypeName' for flavor '${variant.flavorName}'"
-                }
+                )
                 map.remove(flavorName)
 
                 if (buildTypeName == releaseName) onPairFound(previous, variant)

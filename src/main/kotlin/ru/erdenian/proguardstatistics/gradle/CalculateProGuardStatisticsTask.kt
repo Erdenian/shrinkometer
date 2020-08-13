@@ -3,6 +3,7 @@ package ru.erdenian.proguardstatistics.gradle
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.InputChanges
@@ -23,7 +24,8 @@ open class CalculateProGuardStatisticsTask : DefaultTask() {
     lateinit var releaseApkFile: File
 
     @get:InputFile
-    lateinit var mappingFile: File
+    @get:Optional
+    var mappingFile: File? = null
 
     @get:OutputFile
     lateinit var reportFile: File
@@ -35,7 +37,7 @@ open class CalculateProGuardStatisticsTask : DefaultTask() {
 
         val result = readAndCompare(
             execAnalyzer(debugApkFile, "--defined-only"),
-            execAnalyzer(releaseApkFile, "--defined-only --proguard-mappings $mappingFile")
+            execAnalyzer(releaseApkFile, "--defined-only ${mappingFile?.let { "--proguard-mappings $it" } ?: ""}")
         )
 
         FileWriter(reportFile).use { it.appendStructureHtml(result) }
