@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ru.erdenian"
-version = "0.1"
+version = "0.1.0"
 
 repositories {
     google()
