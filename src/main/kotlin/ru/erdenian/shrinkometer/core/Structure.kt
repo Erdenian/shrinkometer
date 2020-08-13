@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics.core
+package ru.erdenian.shrinkometer.core
 
 interface BaseNode {
     val name: String

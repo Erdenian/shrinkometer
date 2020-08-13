@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics.gradle
+package ru.erdenian.shrinkometer.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Provider
@@ -7,8 +7,8 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.InputChanges
-import ru.erdenian.proguardstatistics.core.appendStructureHtml
-import ru.erdenian.proguardstatistics.core.readAndCompare
+import ru.erdenian.shrinkometer.core.appendStructureHtml
+import ru.erdenian.shrinkometer.core.readAndCompare
 import java.io.File
 import java.io.FileWriter
 

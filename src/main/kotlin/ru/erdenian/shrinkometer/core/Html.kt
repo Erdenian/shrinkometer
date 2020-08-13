@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics.core
+package ru.erdenian.shrinkometer.core
 
 import kotlinx.html.body
 import kotlinx.html.checkBoxInput

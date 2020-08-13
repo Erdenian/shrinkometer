@@ -1,4 +1,4 @@
-package ru.erdenian.proguardstatistics.gradle
+package ru.erdenian.shrinkometer.gradle
 
 import com.android.SdkConstants
 import com.android.build.gradle.AppExtension
