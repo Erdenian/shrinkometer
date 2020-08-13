@@ -1,2 +1,1 @@
-rootProject.name = "ProguardStatistics"
-
+rootProject.name = "shrinkometer"

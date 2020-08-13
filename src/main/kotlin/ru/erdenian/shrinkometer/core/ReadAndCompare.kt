@@ -1,12 +1,9 @@
-package ru.erdenian.proguardstatistics
+package ru.erdenian.shrinkometer.core
 
 import java.io.Reader
 import java.util.LinkedList
 
-private const val DEBUG_REPORT_SIZE_MULTIPLIER = 6
-
-fun readAndCompare(debug: Reader, release: Reader) =
-    debug.readDebugAndCompareToReleaseSizes(release.readReleaseSizes()).readStructure()
+fun readAndCompare(debug: Reader, release: Reader) = debug.readDebugAndCompareToReleaseSizes(release.readReleaseSizes())
 
 @OptIn(ExperimentalStdlibApi::class)
 private fun Reader.readReleaseSizes() = buildMap<String, Int> {
@@ -18,25 +15,10 @@ private fun Reader.readReleaseSizes() = buildMap<String, Int> {
     }
 }
 
-private fun Reader.readDebugAndCompareToReleaseSizes(release: Map<String, Int>) = LinkedHashMap<String, ItemInfo>(
-    release.size * DEBUG_REPORT_SIZE_MULTIPLIER
-).apply {
-    forEachLine { line ->
-        val byteSizeIndex = 2
-        val nameIndex = 3
-        val items = line.split('\t')
-
-        val name = items[nameIndex]
-        val size = items[byteSizeIndex].toInt()
-
-        put(name, ItemInfo(items.first().first(), release.getOrDefault(name, 0), size))
-    }
-}
-
-private fun LinkedHashMap<String, ItemInfo>.readStructure(): PackageNode {
+private fun Reader.readDebugAndCompareToReleaseSizes(release: Map<String, Int>): PackageNode {
     val packagesStack = LinkedList<PackageNode>()
     var currentClassNode = ClassNode("", "", -1, -1)
-    val comparator = compareByDescending<BaseNode> { it.oldSize - it.size }
+    val comparator = compareByDescending<BaseNode> { it.originalSize - it.shrankSize }
 
     fun popPackages(currentName: String) {
         var packageName = packagesStack.peek().name
@@ -54,17 +36,26 @@ private fun LinkedHashMap<String, ItemInfo>.readStructure(): PackageNode {
         }
     }
 
-    forEach { (name, info) ->
-        when (info.type) {
+    val byteSizeIndex = 2
+    val nameIndex = 3
+    forEachLine { line ->
+        val items = line.split('\t')
+
+        val type = items.first().first()
+        val name = items[nameIndex]
+        val shrankSize = release.getOrDefault(name, 0)
+        val originalSize = items[byteSizeIndex].toInt()
+
+        when (type) {
             'P' -> {
                 if (packagesStack.isEmpty()) {
                     check(name == "<TOTAL>")
                     // Name must be empty string to work properly with `startsWith` check
-                    packagesStack.push(PackageNode("", info.size, info.oldSize))
+                    packagesStack.push(PackageNode("", shrankSize, originalSize))
                 } else {
                     popPackages(name)
 
-                    val node = PackageNode(name, info.size, info.oldSize)
+                    val node = PackageNode(name, shrankSize, originalSize)
                     packagesStack.peek().subpackages += node
                     packagesStack.push(node)
                 }
@@ -73,7 +64,7 @@ private fun LinkedHashMap<String, ItemInfo>.readStructure(): PackageNode {
                 popPackages(name)
 
                 val packageNode = packagesStack.peek()
-                val node = ClassNode(packageNode.name, name.removePrefix(packageNode.name), info.size, info.oldSize)
+                val node = ClassNode(packageNode.name, name.removePrefix(packageNode.name), shrankSize, originalSize)
 
                 packageNode.classes += node
                 currentClassNode.run {
@@ -84,20 +75,14 @@ private fun LinkedHashMap<String, ItemInfo>.readStructure(): PackageNode {
             }
             'M' -> {
                 val dropSize = packagesStack.peek().name.length + currentClassNode.name.length + 1
-                currentClassNode.methods += MethodNode(name.drop(dropSize), info.size, info.oldSize)
+                currentClassNode.methods += MethodNode(name.drop(dropSize), shrankSize, originalSize)
             }
             'F' -> {
                 val dropSize = packagesStack.peek().name.length + currentClassNode.name.length + 1
-                currentClassNode.fields += FieldNode(name.drop(dropSize), info.size, info.oldSize)
+                currentClassNode.fields += FieldNode(name.drop(dropSize), shrankSize, originalSize)
             }
-            else -> throw IllegalStateException("Unknown type: ${info.type}")
+            else -> throw IllegalStateException("Unknown type: $type")
         }
     }
     return packagesStack.last.copy(name = "<TOTAL>")
 }
-
-private data class ItemInfo(
-    val type: Char,
-    val size: Int,
-    val oldSize: Int
-)
