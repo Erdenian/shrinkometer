@@ -1,12 +1,16 @@
 package ru.erdenian.proguardstatistics.gradle
 
+import com.android.SdkConstants
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.builder.core.BuilderConstants
+import com.android.sdklib.tool.sdkmanager.SdkManagerCli
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import java.io.File
 
+@Suppress("unused")
 class ProGuardStatisticsPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
@@ -14,18 +18,33 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
             .findByType(AppExtension::class.java)
             ?: throw GradleException("ProguardStatistics plugin must be used with android application plugin")
 
+        val apkAnalyserProvider = target.providers.provider {
+            fun installTools() = SdkManagerCli.main(arrayOf("cmdline-tools;latest", "--sdk_root=${app.sdkDirectory}"))
+            fun findAnalyzer(bin: File) = bin.listFiles { _, name -> name.startsWith("apkanalyzer") }?.single()
+
+            val cmdlineTools = File(app.sdkDirectory, SdkConstants.FD_CMDLINE_TOOLS)
+            val bin = File(cmdlineTools, "latest|bin".replace('|', File.separatorChar))
+
+            var apkAnalyzer = findAnalyzer(bin)
+            if (bin.exists().not() || (apkAnalyzer == null)) {
+                installTools()
+                apkAnalyzer = findAnalyzer(bin)
+            }
+            checkNotNull(apkAnalyzer) { "Could not find apkanalyzer executable" }
+        }
+
         val pairFounder = DebugReleasePairFounder({ debug, release ->
             val capitalizedFlavorName = release.flavorName.capitalize()
             target.tasks.create(
                 "calculate${capitalizedFlavorName}ProGuardStatistics",
                 CalculateProGuardStatisticsTask::class.java
             ) { task ->
-                task.sdkPath = app.sdkDirectory.absolutePath
-                task.reportFilePath = "./result.html"
+                task.apkAnalyzerFile = apkAnalyserProvider
+                task.reportFile = File(target.buildDir, "pgstat/result.html")
 
-                task.debugApkPath = debug.outputs.single().outputFile.absolutePath
-                task.releaseApkPath = release.outputs.single().outputFile.absolutePath
-                task.mappingFilePath = release.mappingFileProvider.get().singleFile.absolutePath
+                task.debugApkFile = debug.outputs.single().outputFile
+                task.releaseApkFile = release.outputs.single().outputFile
+                task.mappingFile = release.mappingFileProvider.get().singleFile
 
                 task.dependsOn(
                     "assemble${capitalizedFlavorName}Debug",

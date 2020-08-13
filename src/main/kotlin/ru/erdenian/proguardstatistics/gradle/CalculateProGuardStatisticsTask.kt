@@ -1,8 +1,9 @@
 package ru.erdenian.proguardstatistics.gradle
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.work.InputChanges
 import ru.erdenian.proguardstatistics.core.appendStructureHtml
@@ -12,33 +13,31 @@ import java.io.FileWriter
 
 open class CalculateProGuardStatisticsTask : DefaultTask() {
 
-    @get:Input
-    var sdkPath: String? = null
+    @get:InputFile
+    lateinit var apkAnalyzerFile: Provider<File>
 
-    @get:Input
-    var debugApkPath: String? = null
+    @get:InputFile
+    lateinit var debugApkFile: File
 
-    @get:Input
-    var releaseApkPath: String? = null
+    @get:InputFile
+    lateinit var releaseApkFile: File
 
-    @get:Input
-    var mappingFilePath: String? = null
+    @get:InputFile
+    lateinit var mappingFile: File
 
-    @get:OutputDirectory
-    var reportFilePath: String? = null
+    @get:OutputFile
+    lateinit var reportFile: File
 
     @TaskAction
     internal fun taskAction(inputs: InputChanges) {
-        val apkAnalyzerPath = sdkPath + "|cmdline-tools|1.0|bin|apkanalyzer.bat".replace('|', File.separatorChar)
-
-        fun execAnalyzer(apkPath: String, params: String) =
-            Runtime.getRuntime().exec("$apkAnalyzerPath dex packages $apkPath $params").inputStream.reader()
+        fun execAnalyzer(apk: File, params: String) =
+            Runtime.getRuntime().exec("${apkAnalyzerFile.get()} dex packages $apk $params").inputStream.reader()
 
         val result = readAndCompare(
-            execAnalyzer(debugApkPath!!, "--defined-only"),
-            execAnalyzer(releaseApkPath!!, "--defined-only --proguard-mappings $mappingFilePath")
+            execAnalyzer(debugApkFile, "--defined-only"),
+            execAnalyzer(releaseApkFile, "--defined-only --proguard-mappings $mappingFile")
         )
 
-        FileWriter(reportFilePath!!).use { it.appendStructureHtml(result) }
+        FileWriter(reportFile).use { it.appendStructureHtml(result) }
     }
 }
