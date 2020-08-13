@@ -37,11 +37,11 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
         val pairFounder = DebugReleasePairFounder({ debug, release ->
             val capitalizedFlavorName = release.flavorName.capitalize()
             target.tasks.create(
-                "calculate${capitalizedFlavorName}ProGuardStatistics",
+                "calculate${capitalizedFlavorName}ShrunkSize",
                 CalculateProGuardStatisticsTask::class.java
             ) { task ->
                 task.apkAnalyzerFile = apkAnalyserProvider
-                task.reportFile = File(target.buildDir, "pgstat/result.html")
+                task.reportFile = File(target.buildDir, "shrinkometer/shrinkometer.html")
 
                 task.debugApkFile = debug.outputs.single().outputFile
                 task.releaseApkFile = release.outputs.single().outputFile

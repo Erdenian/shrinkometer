@@ -23,7 +23,7 @@ import kotlin.math.abs
 
 fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
     head {
-        title("ProGuardStatistics report")
+        title("shrinkometer report")
         style { unsafe { +readResource("/styles.css") } }
     }
     body {
