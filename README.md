@@ -4,6 +4,8 @@ Gradle plugin that calculates fields, methods, classes and packages size differe
 
 ## Usage
 
+**This plugin is currently in the process of being approved by the Gradle Plugin Portal maintainers, so it cannot be applied to your project yet.**
+
 Add classpath dependency to your root build.gradle file:
 ```kotlin
 buildscript {
