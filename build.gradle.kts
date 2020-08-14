@@ -1,9 +1,10 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.3.72"
-    `java-gradle-plugin`
     id("com.gradle.plugin-publish") version "0.12.0"
+    `java-gradle-plugin`
 }
 
 group = "ru.erdenian"
@@ -19,7 +20,7 @@ configure<JavaPluginConvention> {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType<KotlinCompile>().all {
+tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = "1.8"
         @Suppress("SuspiciousCollectionReassignment")
@@ -29,8 +30,18 @@ tasks.withType<KotlinCompile>().all {
 
 dependencies {
     implementation(kotlin("stdlib"))
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+
     implementation("com.android.tools.build:gradle:4.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.1")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+    }
 }
 
 pluginBundle {
