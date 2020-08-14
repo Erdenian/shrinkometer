@@ -12,6 +12,7 @@ import ru.erdenian.shrinkometer.core.readAndCompare
 import java.io.File
 import java.io.FileWriter
 
+@Suppress("LateinitUsage")
 open class CalculateProGuardStatisticsTask : DefaultTask() {
 
     @get:InputFile

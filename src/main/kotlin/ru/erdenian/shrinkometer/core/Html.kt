@@ -67,6 +67,7 @@ fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = fal
     }
 }
 
+@Suppress("MagicNumber")
 internal fun humanReadableSize(bytes: Long): String? {
     val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
     if (absB < 1024) return "$bytes B"
@@ -82,6 +83,7 @@ internal fun humanReadableSize(bytes: Long): String? {
     return String.format(Locale.US, "%.1f %ciB", value / 1024.0, ci.current())
 }
 
+@Suppress("MagicNumber")
 private fun BaseNode.stringify() = String.format(
     Locale.US,
     "%s - %s (%.0f%%) from %s to %s",
