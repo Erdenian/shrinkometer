@@ -41,7 +41,7 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
                 CalculateProGuardStatisticsTask::class.java
             ) { task ->
                 task.apkAnalyzerFile = apkAnalyserProvider
-                task.reportFile = File(target.buildDir, "shrinkometer/shrinkometer.html")
+                task.reportFile = File(target.buildDir, "reports/shrinkometer/shrinkometer${capitalizedFlavorName}.html")
 
                 task.debugApkFile = debug.outputs.single().outputFile
                 task.releaseApkFile = release.outputs.single().outputFile
