@@ -66,7 +66,7 @@ fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = fal
     }
 }
 
-private fun humanReadableByteCountBin(bytes: Long): String? {
+internal fun humanReadableSize(bytes: Long): String? {
     val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
     if (absB < 1024) return "$bytes B"
     var value = absB
@@ -84,10 +84,10 @@ private fun humanReadableByteCountBin(bytes: Long): String? {
 private fun BaseNode.stringify() = String.format(
     "%s - %s (%.0f%%) from %s to %s",
     name,
-    humanReadableByteCountBin(originalSize.toLong() - shrankSize),
+    humanReadableSize(originalSize.toLong() - shrankSize),
     (1.0f - shrankSize.toFloat() / originalSize) * 100.0f,
-    humanReadableByteCountBin(originalSize.toLong()),
-    humanReadableByteCountBin(shrankSize.toLong())
+    humanReadableSize(originalSize.toLong()),
+    humanReadableSize(shrankSize.toLong())
 )
 
 private fun readResource(path: String) = {}::class.java.getResource(path).readText()
