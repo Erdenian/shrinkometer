@@ -19,6 +19,7 @@ import java.lang.Long.signum
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import java.time.ZonedDateTime
+import java.util.Locale
 import kotlin.math.abs
 
 fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
@@ -78,10 +79,11 @@ internal fun humanReadableSize(bytes: Long): String? {
         i -= 10
     }
     value *= signum(bytes).toLong()
-    return String.format("%.1f %ciB", value / 1024.0, ci.current())
+    return String.format(Locale.US, "%.1f %ciB", value / 1024.0, ci.current())
 }
 
 private fun BaseNode.stringify() = String.format(
+    Locale.US,
     "%s - %s (%.0f%%) from %s to %s",
     name,
     humanReadableSize(originalSize.toLong() - shrankSize),
