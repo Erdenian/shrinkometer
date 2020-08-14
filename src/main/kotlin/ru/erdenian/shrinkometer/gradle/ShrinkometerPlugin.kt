@@ -11,7 +11,7 @@ import org.gradle.api.Project
 import java.io.File
 
 @Suppress("unused")
-class ProGuardStatisticsPlugin : Plugin<Project> {
+class ShrinkometerPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         val app = target.extensions
@@ -38,7 +38,7 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
             val capitalizedFlavorName = release.flavorName.capitalize()
             target.tasks.create(
                 "calculate${capitalizedFlavorName}ShrunkSize",
-                CalculateProGuardStatisticsTask::class.java
+                CalculateShrunkSizeTask::class.java
             ) { task ->
                 task.apkAnalyzerFile = apkAnalyserProvider
                 task.reportFile = File(target.buildDir, "reports/shrinkometer/shrinkometer$capitalizedFlavorName.html")

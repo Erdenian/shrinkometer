@@ -12,7 +12,7 @@ import java.io.File
 import java.io.FileWriter
 
 @Suppress("LateinitUsage")
-open class CalculateProGuardStatisticsTask : DefaultTask() {
+open class CalculateShrunkSizeTask : DefaultTask() {
 
     @get:InputFile
     lateinit var apkAnalyzerFile: Provider<File>

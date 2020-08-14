@@ -62,7 +62,7 @@ gradlePlugin {
             id = "ru.erdenian.shrinkometer"
             displayName = "Calculate size savings after shrinkage"
             description = "Calculates per class size difference in dex files with and without code shrinking"
-            implementationClass = "ru.erdenian.shrinkometer.gradle.ProGuardStatisticsPlugin"
+            implementationClass = "ru.erdenian.shrinkometer.gradle.ShrinkometerPlugin"
         }
     }
 }
