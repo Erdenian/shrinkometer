@@ -1,5 +1,12 @@
 package ru.erdenian.shrinkometer.core
 
+import java.io.Writer
+import java.lang.Long.signum
+import java.text.CharacterIterator
+import java.text.StringCharacterIterator
+import java.time.ZonedDateTime
+import java.util.Locale
+import kotlin.math.abs
 import kotlinx.html.body
 import kotlinx.html.checkBoxInput
 import kotlinx.html.div
@@ -14,13 +21,6 @@ import kotlinx.html.style
 import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
-import java.io.Writer
-import java.lang.Long.signum
-import java.text.CharacterIterator
-import java.text.StringCharacterIterator
-import java.time.ZonedDateTime
-import java.util.Locale
-import kotlin.math.abs
 
 fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
     head {

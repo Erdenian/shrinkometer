@@ -1,5 +1,7 @@
 package ru.erdenian.shrinkometer.gradle
 
+import java.io.File
+import java.io.FileWriter
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.InputFile
@@ -8,8 +10,6 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import ru.erdenian.shrinkometer.core.appendStructureHtml
 import ru.erdenian.shrinkometer.core.readAndCompare
-import java.io.File
-import java.io.FileWriter
 
 @Suppress("LateinitUsage")
 open class CalculateShrunkSizeTask : DefaultTask() {

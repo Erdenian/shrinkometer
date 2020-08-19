@@ -5,10 +5,10 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.builder.core.BuilderConstants
 import com.android.sdklib.tool.sdkmanager.SdkManagerCli
+import java.io.File
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.io.File
 
 @Suppress("unused")
 class ShrinkometerPlugin : Plugin<Project> {
