@@ -2,8 +2,8 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.72"
-    id("io.gitlab.arturbosch.detekt") version "1.11.0"
+    kotlin("jvm") version "1.4.0"
+    id("io.gitlab.arturbosch.detekt") version "1.11.1"
     id("com.gradle.plugin-publish") version "0.12.0"
     `java-gradle-plugin`
 }
@@ -23,16 +23,17 @@ configure<JavaPluginConvention> {
 
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
         @Suppress("SuspiciousCollectionReassignment")
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += listOf(
+            "-Xjvm-default=all",
+            "-Xopt-in=kotlin.RequiresOptIn"
+        )
     }
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.11.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 
     implementation("com.android.tools.build:gradle:4.0.1")
