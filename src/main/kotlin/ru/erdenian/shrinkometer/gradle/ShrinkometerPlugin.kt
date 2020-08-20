@@ -16,7 +16,7 @@ class ShrinkometerPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         val app = target.extensions
             .findByType(AppExtension::class.java)
-            ?: throw GradleException("ProguardStatistics plugin must be used with android application plugin")
+            ?: throw GradleException("shrinkometer plugin must be used with android application plugin")
 
         val apkAnalyserProvider = target.providers.provider {
             fun installTools() = SdkManagerCli.main(arrayOf("cmdline-tools;latest", "--sdk_root=${app.sdkDirectory}"))
