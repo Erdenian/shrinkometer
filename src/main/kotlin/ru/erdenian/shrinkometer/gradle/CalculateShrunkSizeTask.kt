@@ -9,6 +9,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import ru.erdenian.shrinkometer.core.appendStructureHtml
+import ru.erdenian.shrinkometer.core.humanReadableSize
 import ru.erdenian.shrinkometer.core.readAndCompare
 
 @Suppress("LateinitUsage")
@@ -39,7 +40,13 @@ open class CalculateShrunkSizeTask : DefaultTask() {
             execAnalyzer(debugApkFile, "--defined-only"),
             execAnalyzer(releaseApkFile, "--defined-only ${mappingFile?.let { "--proguard-mappings $it" } ?: ""}")
         )
+        logger.quiet(
+            "Classes size reduced from {} to {}",
+            humanReadableSize(result.originalSize),
+            humanReadableSize(result.shrankSize)
+        )
 
         FileWriter(reportFile).use { it.appendStructureHtml(result) }
+        logger.quiet("Successfully generated HTML report at $reportFile")
     }
 }
