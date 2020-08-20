@@ -16,22 +16,18 @@ class ShrinkometerPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         val app = target.extensions
             .findByType(AppExtension::class.java)
-            ?: throw GradleException("shrinkometer plugin must be used with android application plugin")
+            ?: throw GradleException("shrinkometer plugin must be used with com.android.application plugin")
 
         val apkAnalyserProvider = target.providers.provider {
-            fun installTools() = SdkManagerCli.main(arrayOf("cmdline-tools;latest", "--sdk_root=${app.sdkDirectory}"))
-            fun findAnalyzer(bin: File) = bin.listFiles { _, name -> name.startsWith("apkanalyzer") }?.single()
-
             val cmdlineTools = File(app.sdkDirectory, SdkConstants.FD_CMDLINE_TOOLS)
             val bin = File(cmdlineTools, "latest|bin".replace('|', File.separatorChar))
 
-            var apkAnalyzer = findAnalyzer(bin)
-            if (bin.exists().not() || (apkAnalyzer == null)) {
-                installTools()
-                apkAnalyzer = findAnalyzer(bin)
-            }
+            fun findAnalyzer() = bin.listFiles { _, name -> name.startsWith("apkanalyzer") }?.single()
 
-            apkAnalyzer ?: throw GradleException("Could not find apkanalyzer executable")
+            findAnalyzer() ?: run {
+                SdkManagerCli.main(arrayOf("cmdline-tools;latest", "--sdk_root=${app.sdkDirectory}"))
+                findAnalyzer()
+            } ?: throw GradleException("Could not find apkanalyzer executable")
         }
 
         val pairFounder = DebugReleasePairFounder({ debug, release ->
