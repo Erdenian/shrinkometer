@@ -4,12 +4,10 @@ Gradle plugin that calculates fields, methods, classes and packages size differe
 
 ## Usage
 
-Add classpath dependency to your root build.gradle file:
+Apply plugin to your root build.gradle file:
 ```kotlin
-buildscript {
-    dependencies {
-        classpath("ru.erdenian:shrinkometer:0.2.0")
-    }
+plugins {
+    id("ru.erdenian.shrinkometer") version "0.2.1" apply false
 }
 ```
 

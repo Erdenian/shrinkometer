@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2020-08-20
+
 ### Fixed
 - 'Unable to find method' error by downgrading to Kotlin 1.3.72
 
@@ -13,5 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[Unreleased]: https://github.com/Erdenian/StudentAssistant/compare/0.2.0...develop
-[0.0.0]: https://github.com/Erdenian/StudentAssistant/releases/tag/0.2.0
+[Unreleased]: https://github.com/Erdenian/shrinkometer/compare/0.2.1...develop
+[0.2.1]: https://github.com/Erdenian/shrinkometer/compare/0.2.0...0.2.1
+[0.2.0]: https://github.com/Erdenian/shrinkometer/releases/tag/0.2.0
