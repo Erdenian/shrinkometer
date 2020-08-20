@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- 'Unable to find method' error by downgrading to Kotlin 1.3.72
+
 ## [0.2.0] - 2020-08-20
 
 Initial release
