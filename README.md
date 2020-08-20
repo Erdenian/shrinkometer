@@ -1,5 +1,7 @@
 # shrinkometer
 
+[![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/ru/erdenian/shrinkometer/ru.erdenian.shrinkometer.gradle.plugin/maven-metadata.xml.svg?label=Gradle%20Plugin%20Portal)](https://plugins.gradle.org/plugin/ru.erdenian.shrinkometer)
+
 Gradle plugin that calculates fields, methods, classes and packages size difference before and after ProGuard or R8 shrinking.
 
 ## Usage
