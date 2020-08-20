@@ -51,6 +51,9 @@ tasks.test {
     }
 }
 
+System.getenv("GRADLE_PUBLISH_KEY")?.let { project.ext["gradle.publish.key"] = it }
+System.getenv("GRADLE_PUBLISH_SECRET")?.let { project.ext["gradle.publish.secret"] = it }
+
 pluginBundle {
     website = "https://github.com/Erdenian/shrinkometer"
     vcsUrl = "https://github.com/Erdenian/shrinkometer.git"
