@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.erdenian"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
     google()
@@ -50,6 +50,9 @@ tasks.test {
         events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
     }
 }
+
+System.getenv("GRADLE_PUBLISH_KEY")?.let { project.ext["gradle.publish.key"] = it }
+System.getenv("GRADLE_PUBLISH_SECRET")?.let { project.ext["gradle.publish.secret"] = it }
 
 pluginBundle {
     website = "https://github.com/Erdenian/shrinkometer"
