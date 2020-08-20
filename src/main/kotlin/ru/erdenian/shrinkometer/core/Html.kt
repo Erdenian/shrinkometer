@@ -88,10 +88,10 @@ private fun BaseNode.stringify() = String.format(
     Locale.US,
     "%s - %s (%.0f%%) from %s to %s",
     name,
-    humanReadableSize(originalSize.toLong() - shrankSize),
+    humanReadableSize(originalSize - shrankSize),
     (1.0f - shrankSize.toFloat() / originalSize) * 100.0f,
-    humanReadableSize(originalSize.toLong()),
-    humanReadableSize(shrankSize.toLong())
+    humanReadableSize(originalSize),
+    humanReadableSize(shrankSize)
 )
 
 private fun readResource(path: String) = {}::class.java.getResource(path).readText()

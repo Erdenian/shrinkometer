@@ -6,16 +6,16 @@ import java.util.LinkedList
 fun readAndCompare(debug: Reader, release: Reader) = debug.readDebugAndCompareToReleaseSizes(release.readReleaseSizes())
 
 @OptIn(ExperimentalStdlibApi::class)
-private fun Reader.readReleaseSizes() = buildMap<String, Int> {
+private fun Reader.readReleaseSizes() = buildMap<String, Long> {
     forEachLine { line ->
         val byteSizeIndex = 2
         val nameIndex = 3
         val items = line.split('\t')
-        put(items[nameIndex], items[byteSizeIndex].toInt())
+        put(items[nameIndex], items[byteSizeIndex].toLong())
     }
 }
 
-private fun Reader.readDebugAndCompareToReleaseSizes(release: Map<String, Int>): PackageNode {
+private fun Reader.readDebugAndCompareToReleaseSizes(release: Map<String, Long>): PackageNode {
     val packagesStack = LinkedList<PackageNode>()
     var currentClassNode = ClassNode("", "", -1, -1)
     val comparator = compareByDescending<BaseNode> { it.originalSize - it.shrankSize }
@@ -44,7 +44,7 @@ private fun Reader.readDebugAndCompareToReleaseSizes(release: Map<String, Int>):
         val type = items.first().first()
         val name = items[nameIndex]
         val shrankSize = release.getOrDefault(name, 0)
-        val originalSize = items[byteSizeIndex].toInt()
+        val originalSize = items[byteSizeIndex].toLong()
 
         when (type) {
             'P' -> {

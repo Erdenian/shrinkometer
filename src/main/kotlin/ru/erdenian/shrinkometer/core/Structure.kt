@@ -2,14 +2,14 @@ package ru.erdenian.shrinkometer.core
 
 interface BaseNode {
     val name: String
-    val shrankSize: Int
-    val originalSize: Int
+    val shrankSize: Long
+    val originalSize: Long
 }
 
 data class PackageNode(
     override val name: String,
-    override val shrankSize: Int,
-    override val originalSize: Int,
+    override val shrankSize: Long,
+    override val originalSize: Long,
     val subpackages: MutableList<PackageNode> = mutableListOf(),
     val classes: MutableList<ClassNode> = mutableListOf()
 ) : BaseNode
@@ -17,20 +17,20 @@ data class PackageNode(
 data class ClassNode(
     val packageName: String,
     override val name: String,
-    override val shrankSize: Int,
-    override val originalSize: Int,
+    override val shrankSize: Long,
+    override val originalSize: Long,
     val methods: MutableList<MethodNode> = mutableListOf(),
     val fields: MutableList<FieldNode> = mutableListOf()
 ) : BaseNode
 
 data class MethodNode(
     override val name: String,
-    override val shrankSize: Int,
-    override val originalSize: Int
+    override val shrankSize: Long,
+    override val originalSize: Long
 ) : BaseNode
 
 data class FieldNode(
     override val name: String,
-    override val shrankSize: Int,
-    override val originalSize: Int
+    override val shrankSize: Long,
+    override val originalSize: Long
 ) : BaseNode
