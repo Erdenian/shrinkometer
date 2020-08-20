@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.erdenian"
-version = "0.2.0"
+version = "0.2.1"
 
 repositories {
     google()
@@ -65,9 +65,10 @@ gradlePlugin {
     plugins {
         create("shrinkometer") {
             id = "ru.erdenian.shrinkometer"
+            implementationClass = "ru.erdenian.shrinkometer.gradle.ShrinkometerPlugin"
+
             displayName = "Calculate size savings after shrinkage"
             description = "Calculates per class size difference in dex files with and without code shrinking"
-            implementationClass = "ru.erdenian.shrinkometer.gradle.ShrinkometerPlugin"
         }
     }
 }
