@@ -1,13 +1,15 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.72"
-    `java-gradle-plugin`
+    kotlin("jvm") version "1.4.0"
+    id("io.gitlab.arturbosch.detekt") version "1.11.1"
     id("com.gradle.plugin-publish") version "0.12.0"
+    `java-gradle-plugin`
 }
 
 group = "ru.erdenian"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
     google()
@@ -19,19 +21,38 @@ configure<JavaPluginConvention> {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType<KotlinCompile>().all {
+tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
         @Suppress("SuspiciousCollectionReassignment")
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += listOf(
+            "-Xjvm-default=all",
+            "-Xopt-in=kotlin.RequiresOptIn"
+        )
     }
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.11.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+
     implementation("com.android.tools.build:gradle:4.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.1")
 }
+
+detekt {
+    config = files("detekt-config.yml")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+    }
+}
+
+System.getenv("GRADLE_PUBLISH_KEY")?.let { project.ext["gradle.publish.key"] = it }
+System.getenv("GRADLE_PUBLISH_SECRET")?.let { project.ext["gradle.publish.secret"] = it }
 
 pluginBundle {
     website = "https://github.com/Erdenian/shrinkometer"
@@ -45,7 +66,7 @@ gradlePlugin {
             id = "ru.erdenian.shrinkometer"
             displayName = "Calculate size savings after shrinkage"
             description = "Calculates per class size difference in dex files with and without code shrinking"
-            implementationClass = "ru.erdenian.shrinkometer.gradle.ProGuardStatisticsPlugin"
+            implementationClass = "ru.erdenian.shrinkometer.gradle.ShrinkometerPlugin"
         }
     }
 }

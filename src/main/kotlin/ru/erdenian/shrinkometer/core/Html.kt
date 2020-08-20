@@ -1,5 +1,12 @@
 package ru.erdenian.shrinkometer.core
 
+import java.io.Writer
+import java.lang.Long.signum
+import java.text.CharacterIterator
+import java.text.StringCharacterIterator
+import java.time.ZonedDateTime
+import java.util.Locale
+import kotlin.math.abs
 import kotlinx.html.body
 import kotlinx.html.checkBoxInput
 import kotlinx.html.div
@@ -14,16 +21,10 @@ import kotlinx.html.style
 import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
-import java.io.Writer
-import java.lang.Long.signum
-import java.text.CharacterIterator
-import java.text.StringCharacterIterator
-import java.time.ZonedDateTime
-import kotlin.math.abs
 
 fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
     head {
-        title("ProGuardStatistics report")
+        title("shrinkometer report")
         style { unsafe { +readResource("/styles.css") } }
     }
     body {
@@ -66,7 +67,8 @@ fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = fal
     }
 }
 
-private fun humanReadableByteCountBin(bytes: Long): String? {
+@Suppress("MagicNumber")
+internal fun humanReadableSize(bytes: Long): String? {
     val absB = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else abs(bytes)
     if (absB < 1024) return "$bytes B"
     var value = absB
@@ -78,16 +80,18 @@ private fun humanReadableByteCountBin(bytes: Long): String? {
         i -= 10
     }
     value *= signum(bytes).toLong()
-    return String.format("%.1f %ciB", value / 1024.0, ci.current())
+    return String.format(Locale.US, "%.1f %ciB", value / 1024.0, ci.current())
 }
 
+@Suppress("MagicNumber")
 private fun BaseNode.stringify() = String.format(
+    Locale.US,
     "%s - %s (%.0f%%) from %s to %s",
     name,
-    humanReadableByteCountBin(originalSize.toLong() - shrankSize),
+    humanReadableSize(originalSize.toLong() - shrankSize),
     (1.0f - shrankSize.toFloat() / originalSize) * 100.0f,
-    humanReadableByteCountBin(originalSize.toLong()),
-    humanReadableByteCountBin(shrankSize.toLong())
+    humanReadableSize(originalSize.toLong()),
+    humanReadableSize(shrankSize.toLong())
 )
 
 private fun readResource(path: String) = {}::class.java.getResource(path).readText()

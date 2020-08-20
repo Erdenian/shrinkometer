@@ -5,13 +5,13 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.api.ApplicationVariant
 import com.android.builder.core.BuilderConstants
 import com.android.sdklib.tool.sdkmanager.SdkManagerCli
+import java.io.File
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.io.File
 
 @Suppress("unused")
-class ProGuardStatisticsPlugin : Plugin<Project> {
+class ShrinkometerPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         val app = target.extensions
@@ -37,11 +37,11 @@ class ProGuardStatisticsPlugin : Plugin<Project> {
         val pairFounder = DebugReleasePairFounder({ debug, release ->
             val capitalizedFlavorName = release.flavorName.capitalize()
             target.tasks.create(
-                "calculate${capitalizedFlavorName}ProGuardStatistics",
-                CalculateProGuardStatisticsTask::class.java
+                "calculate${capitalizedFlavorName}ShrunkSize",
+                CalculateShrunkSizeTask::class.java
             ) { task ->
                 task.apkAnalyzerFile = apkAnalyserProvider
-                task.reportFile = File(target.buildDir, "pgstat/result.html")
+                task.reportFile = File(target.buildDir, "reports/shrinkometer/shrinkometer$capitalizedFlavorName.html")
 
                 task.debugApkFile = debug.outputs.single().outputFile
                 task.releaseApkFile = release.outputs.single().outputFile
