@@ -6,25 +6,25 @@ Gradle plugin that calculates fields, methods, classes and packages size differe
 
 ## Usage
 
-Apply plugin to your root build.gradle file:
+Add plugin to your root build.gradle file:
 ```kotlin
 plugins {
-    id("ru.erdenian.shrinkometer") version "0.2.1" apply false
+    id("ru.erdenian.shrinkometer") version "[version]" apply false
 }
 ```
 
-And then add plugin to plugins block in build.gradle in your app module:
+And then apply plugin in build.gradle file in your app module:
 ```kotlin
 plugins {
     id("ru.erdenian.shrinkometer")
 }
 ```
 
-Now you can call Gradle task to make report of saved size after shrinkage.
+Now you can call Gradle task to make report of saved size after shrinkage:
 ```shell script
 ./gradlew calculateShrunkSize
 ```
-or if your application has flavors
+or if your application has flavors:
 ```shell script
 ./gradlew calculate[flavor_name_capitalized]ShrunkSize
 ```
