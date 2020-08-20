@@ -11,24 +11,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
       - uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 14
       - name: Detekt
         run: ./gradlew detekt
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Detekt
-          path: build/reports/detekt/detekt.html
+          path: "build/reports/detekt/detekt.html"
+          if-no-files-found: error
 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
       - uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 14
       - name: Unit Test
         run: ./gradlew test
       - uses: actions/upload-artifact@v2
@@ -36,31 +49,47 @@ jobs:
         with:
           name: Unit Test
           path: "build/reports/tests/"
+          if-no-files-found: error
 
   build:
+    needs: [analysis, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
       - uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 14
       - name: Assemble
         run: ./gradlew assemble
       - uses: actions/upload-artifact@v2
         if: success()
         with:
           name: Assemble
-          path: build/libs
+          path: "build/libs"
+          if-no-files-found: error
 
   publish:
+    needs: [analysis, test]
     runs-on: ubuntu-latest
     env:
       GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
       GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle-wrapper.properties') }}
       - uses: actions/setup-java@v1
         with:
-          java-version: 1.8
+          java-version: 14
       - name: Publish
         run: ./gradlew publishPlugins
