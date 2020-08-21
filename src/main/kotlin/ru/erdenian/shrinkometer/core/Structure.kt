@@ -16,6 +16,7 @@ abstract class BaseNode {
         internal set
 }
 
+@Suppress("DataClassShouldBeImmutable")
 data class PackageNode private constructor(override var name: String) : BaseNode() {
 
     override val packageName = name.take(maxOf(name.lastIndexOf('.'), 0))

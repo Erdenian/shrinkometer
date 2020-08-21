@@ -12,11 +12,7 @@ internal fun PackageNode.fillMinifiedSizes(release: PackageNode?) {
     minifiedSize = release?.originalSize ?: 0L
 
     classes.fillMinifiedSizes(release?.classes ?: mutableListOf())
-    release?.classes?.forEach { classNode ->
-        "New class added: %s"
-            .format(classNode.fullName)
-            .let(::println)
-    }
+    release?.classes?.forEach { log("New class added: %s", it.fullName) }
 
     val releaseSubpackages = release?.subpackages
     subpackages.forEach { debugPackage ->
@@ -24,11 +20,7 @@ internal fun PackageNode.fillMinifiedSizes(release: PackageNode?) {
         val releasePackage = if (releasePackageIndex != -1) releaseSubpackages?.removeAt(releasePackageIndex) else null
         debugPackage.fillMinifiedSizes(releasePackage)
     }
-    releaseSubpackages?.forEach { subpackage ->
-        "New package added: %s"
-            .format(subpackage.name)
-            .let(::println)
-    }
+    releaseSubpackages?.forEach { log("New package added: %s", it.name) }
 }
 
 @JvmName("fillClassesMinifiedSizes")
@@ -43,18 +35,10 @@ private fun List<ClassNode>.fillMinifiedSizes(releaseClasses: MutableList<ClassN
     debugClass.minifiedSize = releaseClass?.originalSize ?: 0L
 
     debugClass.fields.fillMinifiedSizes(releaseClass?.fields ?: mutableListOf())
-    releaseClass?.fields?.forEach { field ->
-        "New field added to class %s: %s"
-            .format(releaseClass.fullName, field.name)
-            .let(::println)
-    }
+    releaseClass?.fields?.forEach { log("New field added to class %s: %s", releaseClass.fullName, it.name) }
 
     debugClass.methods.fillMinifiedSizes(releaseClass?.methods ?: mutableListOf())
-    releaseClass?.methods?.forEach { method ->
-        "New method added to class %s: %s"
-            .format(releaseClass.fullName, method.name)
-            .let(::println)
-    }
+    releaseClass?.methods?.forEach { log("New method added to class %s: %s", releaseClass.fullName, it.name) }
 }
 
 @JvmName("fillFieldsMinifiedSizes")
@@ -67,14 +51,11 @@ private fun List<FieldNode>.fillMinifiedSizes(releaseFields: MutableList<FieldNo
         check(debugField == releaseField.copy(type = debugField.type)) {
             "Fields are not equal"
         }
-        if (debugField.type != releaseField.type) {
-            "%s.%s field type changed: %s -> %s"
-                .format(
-                    debugField.fullClassName, debugField.name,
-                    debugField.type, releaseField.type
-                )
-                .let(::println)
-        }
+        if (debugField.type != releaseField.type) log(
+            "%s.%s field type changed: %s -> %s",
+            debugField.fullClassName, debugField.name,
+            debugField.type, releaseField.type
+        )
 
         releaseFields.remove(releaseField)
         debugField.minifiedSize = releaseField.originalSize
@@ -94,16 +75,15 @@ private fun List<MethodNode>.fillMinifiedSizes(releaseMethods: MutableList<Metho
         check(debugMethod == releaseMethod.copy(returnType = debugMethod.returnType)) {
             "Methods are not equal"
         }
-        if (debugMethod.returnType != releaseMethod.returnType) {
-            "%s.%s method return type changed: %s -> %s"
-                .format(
-                    debugMethod.fullClassName, debugMethod.signature,
-                    debugMethod.returnType, releaseMethod.returnType
-                )
-                .let(::println)
-        }
+        if (debugMethod.returnType != releaseMethod.returnType) log(
+            "%s.%s method return type changed: %s -> %s",
+            debugMethod.fullClassName, debugMethod.signature,
+            debugMethod.returnType, releaseMethod.returnType
+        )
 
         releaseMethods.remove(releaseMethod)
         debugMethod.minifiedSize = releaseMethod.originalSize
     }
 }
+
+private fun log(format: String, vararg arguments: Any?) = println(format.format(*arguments))

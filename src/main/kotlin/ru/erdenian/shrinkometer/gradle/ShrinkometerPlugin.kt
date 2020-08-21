@@ -33,7 +33,7 @@ class ShrinkometerPlugin : Plugin<Project> {
         val pairFounder = DebugReleasePairFounder({ debug, release ->
             val capitalizedFlavorName = release.flavorName.capitalize()
             target.tasks.create(
-                "shrinkometer${capitalizedFlavorName}",
+                "shrinkometer$capitalizedFlavorName",
                 ShrinkometerTask::class.java
             ) { task ->
                 task.apkAnalyzerFile = apkAnalyserProvider

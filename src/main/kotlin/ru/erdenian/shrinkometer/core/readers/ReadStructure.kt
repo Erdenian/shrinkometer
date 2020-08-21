@@ -11,6 +11,8 @@ private const val ROOT_PACKAGE_NAME = "<TOTAL>"
 
 internal fun Reader.readStructure(): PackageNode {
     val packagesStack = LinkedList<PackageNode>()
+
+    @Suppress("LateinitUsage")
     lateinit var currentClassNode: ClassNode
 
     forEachLine { line ->
@@ -43,24 +45,20 @@ internal fun Reader.readStructure(): PackageNode {
                 }
                 currentClassNode = node
             }
-            'M' -> {
-                currentClassNode.methods += readMethod(data, size).apply {
-                    check(packageName == currentClassNode.packageName) {
-                        "Method package name don't match class package name"
-                    }
-                    check(className == currentClassNode.name) {
-                        "Method class name don't match parent class name"
-                    }
+            'M' -> currentClassNode.methods += readMethod(data, size).apply {
+                check(packageName == currentClassNode.packageName) {
+                    "Method package name don't match class package name"
+                }
+                check(className == currentClassNode.name) {
+                    "Method class name don't match parent class name"
                 }
             }
-            'F' -> {
-                currentClassNode.fields += readField(data, size).apply {
-                    check(packageName == currentClassNode.packageName) {
-                        "Field package name don't match class package name"
-                    }
-                    check(className == currentClassNode.name) {
-                        "Field class name don't match parent class name"
-                    }
+            'F' -> currentClassNode.fields += readField(data, size).apply {
+                check(packageName == currentClassNode.packageName) {
+                    "Field package name don't match class package name"
+                }
+                check(className == currentClassNode.name) {
+                    "Field class name don't match parent class name"
                 }
             }
             else -> throw IllegalStateException("Unknown type: $type")
