@@ -5,14 +5,13 @@ import java.io.FileWriter
 import java.time.ZonedDateTime
 import java.util.Locale
 import kotlinx.html.body
-import kotlinx.html.checkBoxInput
-import kotlinx.html.div
 import kotlinx.html.head
 import kotlinx.html.hr
 import kotlinx.html.html
 import kotlinx.html.id
-import kotlinx.html.label
 import kotlinx.html.li
+import kotlinx.html.script
+import kotlinx.html.span
 import kotlinx.html.stream.appendHTML
 import kotlinx.html.style
 import kotlinx.html.title
@@ -36,41 +35,35 @@ internal fun PackageNode.generateHtmlReport(file: File) = FileWriter(file).use {
             style { unsafe { +readResource("/styles.css") } }
         }
         body {
-            div("css-treeview") {
-                ul {
-                    fun createRecursive(packageNode: PackageNode) {
-                        li {
-                            checkBoxInput { id = packageNode.name }
-                            label {
-                                htmlFor = packageNode.name
-                                text(packageNode.stringify())
-                            }
+            ul {
+                id = "myUL"
 
-                            ul {
-                                packageNode.subpackages.forEachSorted { createRecursive(it) }
+                fun createRecursive(packageNode: PackageNode) {
+                    li {
+                        span("caret package") { +packageNode.stringify() }
 
-                                packageNode.classes.forEachSorted { classNode ->
-                                    li {
-                                        checkBoxInput { id = classNode.packageName + classNode.name }
-                                        label {
-                                            htmlFor = classNode.packageName + classNode.name
-                                            text(classNode.stringify())
-                                        }
+                        ul("nested") {
+                            packageNode.subpackages.forEachSorted { createRecursive(it) }
 
-                                        ul {
-                                            classNode.fields.forEachSorted { li { text(it.stringify()) } }
-                                            classNode.methods.forEachSorted { li { text(it.stringify()) } }
-                                        }
+                            packageNode.classes.forEachSorted { classNode ->
+                                li {
+                                    span("caret class") { +classNode.stringify() }
+
+                                    ul("nested") {
+                                        classNode.fields.forEachSorted { li { span("field") { +it.stringify() } } }
+                                        classNode.methods.forEachSorted { li { span("method") { +it.stringify() } } }
                                     }
                                 }
                             }
                         }
                     }
-                    createRecursive(this@generateHtmlReport)
-
-                    hr()
-                    +"Generated at ${ZonedDateTime.now()}"
                 }
+                createRecursive(this@generateHtmlReport)
+
+                hr()
+                +"Generated at ${ZonedDateTime.now()}"
+
+                script { unsafe { +readResource("/script.js") } }
             }
         }
     }

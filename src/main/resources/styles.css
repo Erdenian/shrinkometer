@@ -1,76 +1,57 @@
-.css-treeview ul,
-.css-treeview li {
-    padding: 0;
+ul, #myUL {
+    list-style-type: none;
+}
+
+/* Remove margins and padding from the parent ul */
+#myUL {
     margin: 0;
-    list-style: none;
+    padding: 0;
 }
 
-.css-treeview input {
-    position: absolute;
-    opacity: 0;
-}
-
-.css-treeview input + label + ul {
-    margin: 0 0 0 22px;
-}
-
-.css-treeview input ~ ul {
-    display: none;
-}
-
-.css-treeview label,
-.css-treeview label::before {
+/* Style the caret/arrow */
+.caret {
     cursor: pointer;
 }
 
-.css-treeview input:checked:not(:disabled) ~ ul {
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+    transform: rotate(90deg);
+}
+
+/* Hide the nested list */
+.nested {
+    display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
     display: block;
 }
 
-.css-treeview label,
-.css-treeview label::before {
-    background: url("http://experiments.wemakesites.net/pages/css3-treeview/example/icons.png") no-repeat;
+.package::before {
+    color: #F7A36F;
 }
 
-.css-treeview label,
-.css-treeview a,
-.css-treeview label::before {
-    display: inline-block;
-    height: 16px;
-    line-height: 16px;
-    vertical-align: middle;
+.class::before {
+    color: #8CD3EC;
 }
 
-.css-treeview label {
-    margin: 0 0 10px 0;
-    background-position: 18px 0;
+.field::before {
+    content: "\25CF";
+    color: #D5C3FB;
+    margin-right: 6px;
 }
 
-.css-treeview label::before {
-    content: "";
-    width: 16px;
-    margin: 0 22px 0 0;
-    vertical-align: middle;
-    background-position: 0 -32px;
+.method::before {
+    content: "\25CF";
+    color: #FBB9C5;
+    margin-right: 6px;
 }
-
-.css-treeview input:checked + label::before {
-    background-position: 0 -16px;
-}
-
-/* webkit adjacent element selector bugfix */
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-    .css-treeview {
-        -webkit-animation: webkit-adjacent-element-selector-bugfix infinite 1s;
-    }
-
-    @-webkit-keyframes webkit-adjacent-element-selector-bugfix {
-        from {
-            padding: 0;
-        }
-        to {
-            padding: 0;
-        }
-    }
-}
- 
