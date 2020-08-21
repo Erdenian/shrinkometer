@@ -6,10 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- New class tree comparison algorithm
+- Gradle task name to `shrinkometer`
+
 ## [0.2.1] - 2020-08-20
 
 ### Fixed
-- 'Unable to find method' error by downgrading to Kotlin 1.3.72
+- `Unable to find method` error by downgrading to Kotlin 1.3.72
 
 ## [0.2.0] - 2020-08-20
 
