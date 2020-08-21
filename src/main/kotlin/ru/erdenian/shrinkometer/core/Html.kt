@@ -22,7 +22,7 @@ import kotlinx.html.title
 import kotlinx.html.ul
 import kotlinx.html.unsafe
 
-fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
+internal fun Writer.appendStructureHtml(root: PackageNode) = appendHTML(prettyPrint = false).html {
     head {
         title("shrinkometer report")
         style { unsafe { +readResource("/styles.css") } }
