@@ -6,13 +6,10 @@ import ru.erdenian.shrinkometer.core.MethodNode
 import ru.erdenian.shrinkometer.core.PackageNode
 
 internal fun PackageNode.fillMinifiedSizes(release: PackageNode?) {
-    if (release != null) check(this == release) {
-        "Packages are not equal"
-    }
     minifiedSize = release?.originalSize ?: 0L
 
     classes.fillMinifiedSizes(release?.classes ?: mutableListOf())
-    release?.classes?.forEach { log("New class added: %s", it.fullName) }
+    release?.classes?.forEach { log("Added class: %s", it.fullName) }
 
     val releaseSubpackages = release?.subpackages
     subpackages.forEach { debugPackage ->
@@ -20,7 +17,7 @@ internal fun PackageNode.fillMinifiedSizes(release: PackageNode?) {
         val releasePackage = if (releasePackageIndex != -1) releaseSubpackages?.removeAt(releasePackageIndex) else null
         debugPackage.fillMinifiedSizes(releasePackage)
     }
-    releaseSubpackages?.forEach { log("New package added: %s", it.name) }
+    releaseSubpackages?.forEach { log("Added package: %s", it.fullName) }
 }
 
 @JvmName("fillClassesMinifiedSizes")
@@ -28,17 +25,17 @@ private fun List<ClassNode>.fillMinifiedSizes(releaseClasses: MutableList<ClassN
     val releaseClassIndex = releaseClasses.indexOfFirst { it.name == debugClass.name }
     val releaseClass = if (releaseClassIndex != -1) releaseClasses.removeAt(releaseClassIndex) else null
 
-    if (releaseClass != null) check(debugClass == releaseClass) {
-        "Classes are not equal"
-    }
-
     debugClass.minifiedSize = releaseClass?.originalSize ?: 0L
 
     debugClass.fields.fillMinifiedSizes(releaseClass?.fields ?: mutableListOf())
-    releaseClass?.fields?.forEach { log("New field added to class %s: %s", releaseClass.fullName, it.name) }
+    releaseClass?.fields?.forEach { field ->
+        log("Added field: %s %s %s", releaseClass.fullName, field.type, field.name)
+    }
 
     debugClass.methods.fillMinifiedSizes(releaseClass?.methods ?: mutableListOf())
-    releaseClass?.methods?.forEach { log("New method added to class %s: %s", releaseClass.fullName, it.name) }
+    releaseClass?.methods?.forEach { method ->
+        log("Added method %s %s", releaseClass.fullName, method.returnType?.let { "$it " } + method.signature)
+    }
 }
 
 @JvmName("fillFieldsMinifiedSizes")
@@ -48,9 +45,6 @@ private fun List<FieldNode>.fillMinifiedSizes(releaseFields: MutableList<FieldNo
     if (releaseField == null) {
         debugField.minifiedSize = 0L
     } else {
-        check(debugField == releaseField.copy(type = debugField.type)) {
-            "Fields are not equal"
-        }
         if (debugField.type != releaseField.type) log(
             "%s.%s field type changed: %s -> %s",
             debugField.fullClassName, debugField.name,
@@ -72,9 +66,6 @@ private fun List<MethodNode>.fillMinifiedSizes(releaseMethods: MutableList<Metho
     if (releaseMethod == null) {
         debugMethod.minifiedSize = 0L
     } else {
-        check(debugMethod == releaseMethod.copy(returnType = debugMethod.returnType)) {
-            "Methods are not equal"
-        }
         if (debugMethod.returnType != releaseMethod.returnType) log(
             "%s.%s method return type changed: %s -> %s",
             debugMethod.fullClassName, debugMethod.signature,
