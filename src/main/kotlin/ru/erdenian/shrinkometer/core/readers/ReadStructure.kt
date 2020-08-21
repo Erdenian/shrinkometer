@@ -1,7 +1,11 @@
-package ru.erdenian.shrinkometer.core
+package ru.erdenian.shrinkometer.core.readers
 
 import java.io.Reader
 import java.util.LinkedList
+import ru.erdenian.shrinkometer.core.ClassNode
+import ru.erdenian.shrinkometer.core.FieldNode
+import ru.erdenian.shrinkometer.core.MethodNode
+import ru.erdenian.shrinkometer.core.PackageNode
 
 private const val ROOT_PACKAGE_NAME = "<TOTAL>"
 

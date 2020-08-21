@@ -1,4 +1,9 @@
-package ru.erdenian.shrinkometer.core
+package ru.erdenian.shrinkometer.core.readers
+
+import ru.erdenian.shrinkometer.core.ClassNode
+import ru.erdenian.shrinkometer.core.FieldNode
+import ru.erdenian.shrinkometer.core.MethodNode
+import ru.erdenian.shrinkometer.core.PackageNode
 
 internal fun PackageNode.fillMinifiedSizes(release: PackageNode?) {
     if (release != null) check(this == release) {
