@@ -16,10 +16,10 @@ abstract class BaseNode {
         internal set
 }
 
-@Suppress("DataClassShouldBeImmutable")
-data class PackageNode private constructor(override var name: String) : BaseNode() {
+data class PackageNode private constructor(val fullName: String) : BaseNode() {
 
-    override val packageName = name.take(maxOf(name.lastIndexOf('.'), 0))
+    override val name = if (fullName.isNotEmpty()) fullName.takeLastWhile { it != '.' } else "<TOTAL>"
+    override val packageName = fullName.dropLast(name.length + 1)
 
     constructor(name: String, originalSize: Long) : this(name) {
         this.originalSize = originalSize

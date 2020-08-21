@@ -24,6 +24,12 @@ import ru.erdenian.shrinkometer.core.humanReadableSize
 import ru.erdenian.shrinkometer.core.readResource
 
 internal fun PackageNode.generateHtmlReport(file: File) = FileWriter(file).use { writer ->
+    val comparator = compareByDescending<BaseNode> { it.originalSize - it.minifiedSize }
+    fun <T : BaseNode> MutableList<T>.forEachSorted(action: (T) -> Unit) {
+        sortWith(comparator)
+        for (element in this) action(element)
+    }
+
     writer.appendHTML(prettyPrint = false).html {
         head {
             title("shrinkometer report")
@@ -41,9 +47,9 @@ internal fun PackageNode.generateHtmlReport(file: File) = FileWriter(file).use {
                             }
 
                             ul {
-                                packageNode.subpackages.forEach { createRecursive(it) }
+                                packageNode.subpackages.forEachSorted { createRecursive(it) }
 
-                                packageNode.classes.forEach { classNode ->
+                                packageNode.classes.forEachSorted { classNode ->
                                     li {
                                         checkBoxInput { id = classNode.packageName + classNode.name }
                                         label {
@@ -52,8 +58,8 @@ internal fun PackageNode.generateHtmlReport(file: File) = FileWriter(file).use {
                                         }
 
                                         ul {
-                                            classNode.fields.forEach { li { text(it.stringify()) } }
-                                            classNode.methods.forEach { li { text(it.stringify()) } }
+                                            classNode.fields.forEachSorted { li { text(it.stringify()) } }
+                                            classNode.methods.forEachSorted { li { text(it.stringify()) } }
                                         }
                                     }
                                 }

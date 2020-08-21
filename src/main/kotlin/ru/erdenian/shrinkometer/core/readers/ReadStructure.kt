@@ -38,7 +38,7 @@ internal fun Reader.readStructure(): PackageNode {
                 val node = readClass(data, size)
 
                 packagesStack.peek().run {
-                    check(name == node.packageName) {
+                    check(fullName == node.packageName) {
                         "Class package name don't match current package name"
                     }
                     classes += node
@@ -64,7 +64,7 @@ internal fun Reader.readStructure(): PackageNode {
             else -> throw IllegalStateException("Unknown type: $type")
         }
     }
-    return packagesStack.last.apply { name = ROOT_PACKAGE_NAME }
+    return packagesStack.last
 }
 
 private fun LinkedList<PackageNode>.popPackages(data: String) {
@@ -76,10 +76,10 @@ private fun LinkedList<PackageNode>.popPackages(data: String) {
         return startsWith && (packageName.isEmpty() || nextIsDot)
     }
 
-    var packageName = peek().name
+    var packageName = peek().fullName
     while (!isInPackage(packageName)) {
         pop()
-        packageName = peek().name
+        packageName = peek().fullName
     }
 }
 
