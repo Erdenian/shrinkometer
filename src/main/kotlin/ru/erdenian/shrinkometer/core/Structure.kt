@@ -12,7 +12,7 @@ abstract class BaseNode {
     var originalSize by Delegates.notNull<Long>()
         internal set
 
-    var shrankSize by Delegates.notNull<Long>()
+    var minifiedSize by Delegates.notNull<Long>()
         internal set
 }
 

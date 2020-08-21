@@ -3,34 +3,34 @@ package ru.erdenian.shrinkometer.core
 import java.io.Reader
 
 internal fun readAndCompare(debug: Reader, release: Reader) = debug.readStructure().apply {
-    fillShrankSizes(release.readStructure())
+    fillMinifiedSizes(release.readStructure())
 }
 
-private fun PackageNode.fillShrankSizes(release: PackageNode?) {
+private fun PackageNode.fillMinifiedSizes(release: PackageNode?) {
     if (release != null) check(this == release) {
         "Packages are not equal"
     }
-    shrankSize = release?.originalSize ?: 0L
+    minifiedSize = release?.originalSize ?: 0L
 
     classes.forEach { debugClass ->
         val releaseClass = release?.classes?.find { it.name == debugClass.name }
 
         if (releaseClass == null) {
-            debugClass.shrankSize = 0L
-            debugClass.fields.forEach { it.shrankSize = 0L }
-            debugClass.methods.forEach { it.shrankSize = 0L }
+            debugClass.minifiedSize = 0L
+            debugClass.fields.forEach { it.minifiedSize = 0L }
+            debugClass.methods.forEach { it.minifiedSize = 0L }
         } else {
             check(debugClass == releaseClass) {
                 "Classes are not equal"
             }
-            debugClass.shrankSize = releaseClass.originalSize
+            debugClass.minifiedSize = releaseClass.originalSize
 
             run {
                 val releaseFields = releaseClass.fields
                 debugClass.fields.forEach { debugField ->
                     val releaseField = releaseFields.filter { it.name == debugField.name }.takeIf { it.isNotEmpty() }?.single()
                     if (releaseField == null) {
-                        debugField.shrankSize = 0L
+                        debugField.minifiedSize = 0L
                     } else {
                         check(debugField == releaseField.copy(type = debugField.type)) {
                             "Fields are not equal"
@@ -45,7 +45,7 @@ private fun PackageNode.fillShrankSizes(release: PackageNode?) {
                         }
 
                         releaseFields.remove(releaseField)
-                        debugField.shrankSize = releaseField.originalSize
+                        debugField.minifiedSize = releaseField.originalSize
                     }
                 }
                 releaseFields.forEach { field ->
@@ -63,7 +63,7 @@ private fun PackageNode.fillShrankSizes(release: PackageNode?) {
                         else filter { it.returnType == debugMethod.returnType }.takeIf { it.isNotEmpty() }?.single()
                     }
                     if (releaseMethod == null) {
-                        debugMethod.shrankSize = 0L
+                        debugMethod.minifiedSize = 0L
                     } else {
                         check(debugMethod == releaseMethod.copy(returnType = debugMethod.returnType)) {
                             "Methods are not equal"
@@ -78,7 +78,7 @@ private fun PackageNode.fillShrankSizes(release: PackageNode?) {
                         }
 
                         releaseMethods.remove(releaseMethod)
-                        debugMethod.shrankSize = releaseMethod.originalSize
+                        debugMethod.minifiedSize = releaseMethod.originalSize
                     }
                 }
                 releaseMethods.forEach { method ->
@@ -94,15 +94,15 @@ private fun PackageNode.fillShrankSizes(release: PackageNode?) {
     subpackages.forEach { debugPackage ->
         val releasePackageIndex = releaseSubpackages?.indexOfFirst { it.name == debugPackage.name } ?: -1
         if (releasePackageIndex == -1) {
-            debugPackage.shrankSize = 0
+            debugPackage.minifiedSize = 0
             debugPackage.classes.forEach { debugClass ->
-                debugClass.shrankSize = 0L
-                debugClass.fields.forEach { it.shrankSize = 0L }
-                debugClass.methods.forEach { it.shrankSize = 0L }
+                debugClass.minifiedSize = 0L
+                debugClass.fields.forEach { it.minifiedSize = 0L }
+                debugClass.methods.forEach { it.minifiedSize = 0L }
             }
-            debugPackage.fillShrankSizes(null)
+            debugPackage.fillMinifiedSizes(null)
         } else {
-            debugPackage.fillShrankSizes(releaseSubpackages?.removeAt(releasePackageIndex))
+            debugPackage.fillMinifiedSizes(releaseSubpackages?.removeAt(releasePackageIndex))
         }
     }
     releaseSubpackages?.forEach { subpackage ->

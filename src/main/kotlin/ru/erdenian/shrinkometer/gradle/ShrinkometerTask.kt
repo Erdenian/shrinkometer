@@ -13,7 +13,7 @@ import ru.erdenian.shrinkometer.core.humanReadableSize
 import ru.erdenian.shrinkometer.core.readAndCompare
 
 @Suppress("LateinitUsage")
-open class CalculateShrunkSizeTask : DefaultTask() {
+open class ShrinkometerTask : DefaultTask() {
 
     @get:InputFile
     lateinit var apkAnalyzerFile: Provider<File>
@@ -43,7 +43,7 @@ open class CalculateShrunkSizeTask : DefaultTask() {
         logger.quiet(
             "Classes size reduced from {} to {}",
             humanReadableSize(result.originalSize),
-            humanReadableSize(result.shrankSize)
+            humanReadableSize(result.minifiedSize)
         )
 
         FileWriter(reportFile).use { it.appendStructureHtml(result) }
