@@ -113,56 +113,33 @@ private fun PackageNode.fillShrankSizes(release: PackageNode?) {
     }
 }
 
+private const val ROOT_PACKAGE_NAME = "<TOTAL>"
+
 private fun Reader.readStructure(): PackageNode {
     val packagesStack = LinkedList<PackageNode>()
     lateinit var currentClassNode: ClassNode
 
-    fun popPackages(itemString: String) {
-        var packageName = packagesStack.peek().name
-        fun check(): Boolean {
-            val startsWith = itemString.startsWith(packageName)
-            val nextIsDot = (itemString.getOrNull(packageName.length) == '.')
-            return startsWith && (packageName.isEmpty() || nextIsDot)
-        }
-        while (!check()) {
-            packagesStack.pop()
-            packageName = packagesStack.peek().name
-        }
-    }
-
-    val byteSizeIndex = 2
-    val signatureIndex = 3
     forEachLine { line ->
         val items = line.split('\t')
 
-        val originalSize = items[byteSizeIndex].toLong()
-        val itemString = items[signatureIndex]
+        val size = items[2].toLong()
+        val data = items[3]
 
         when (val type = items.first().first()) {
             'P' -> {
-                @Suppress("UnnecessaryVariable")
-                val packageName = itemString
+                packagesStack.popPackages(data)
+                val node = readPackage(data, size)
 
-                if (packagesStack.isEmpty()) {
-                    check(packageName == "<TOTAL>") {
-                        "Root package name is not '<TOTAL>'. Possible report structure change."
-                    }
-                    // Name must be empty string to work properly with `startsWith` check
-                    packagesStack.push(PackageNode("", originalSize))
-                } else {
-                    popPackages(itemString)
-
-                    val node = PackageNode(packageName, originalSize)
+                if (packagesStack.isNotEmpty()) {
                     packagesStack.peek().subpackages += node
-                    packagesStack.push(node)
+                } else check(data == ROOT_PACKAGE_NAME) {
+                    "Root package name is not '$ROOT_PACKAGE_NAME'. Possible report structure change."
                 }
+                packagesStack.push(node)
             }
             'C' -> {
-                popPackages(itemString)
-                @Suppress("UnnecessaryVariable")
-                val fullClassName = itemString
-
-                val node = ClassNode(fullClassName, originalSize)
+                packagesStack.popPackages(data)
+                val node = readClass(data, size)
 
                 packagesStack.peek().run {
                     check(name == node.packageName) {
@@ -173,25 +150,7 @@ private fun Reader.readStructure(): PackageNode {
                 currentClassNode = node
             }
             'M' -> {
-                val fullClassName: String
-                val returnType: String?
-                val signature: String
-                val methodItems = itemString.split(' ')
-                when (methodItems.size) {
-                    3 -> {
-                        fullClassName = methodItems[0]
-                        returnType = methodItems[1]
-                        signature = methodItems[2]
-                    }
-                    2 -> {
-                        fullClassName = methodItems[0]
-                        returnType = null
-                        signature = methodItems[1]
-                    }
-                    else -> throw IllegalStateException("Can't parse method info: $itemString")
-                }
-
-                currentClassNode.methods += MethodNode(fullClassName, returnType, signature, originalSize).apply {
+                currentClassNode.methods += readMethod(data, size).apply {
                     check(packageName == currentClassNode.packageName) {
                         "Method package name don't match class package name"
                     }
@@ -201,10 +160,7 @@ private fun Reader.readStructure(): PackageNode {
                 }
             }
             'F' -> {
-                val fullClassName = itemString.takeWhile { it != ' ' }
-                val (fieldType, name) = itemString.drop(fullClassName.length + 1).split(' ')
-
-                currentClassNode.fields += FieldNode(fullClassName, fieldType, name, originalSize).apply {
+                currentClassNode.fields += readField(data, size).apply {
                     check(packageName == currentClassNode.packageName) {
                         "Field package name don't match class package name"
                     }
@@ -216,5 +172,52 @@ private fun Reader.readStructure(): PackageNode {
             else -> throw IllegalStateException("Unknown type: $type")
         }
     }
-    return packagesStack.last.apply { name = "<TOTAL>" }
+    return packagesStack.last.apply { name = ROOT_PACKAGE_NAME }
+}
+
+private fun LinkedList<PackageNode>.popPackages(data: String) {
+    if (isEmpty()) return
+
+    fun isInPackage(packageName: String): Boolean {
+        val startsWith = data.startsWith(packageName)
+        val nextIsDot = (data.getOrNull(packageName.length) == '.')
+        return startsWith && (packageName.isEmpty() || nextIsDot)
+    }
+
+    var packageName = peek().name
+    while (!isInPackage(packageName)) {
+        pop()
+        packageName = peek().name
+    }
+}
+
+private fun readPackage(data: String, size: Long) = PackageNode(data.takeIf { it != ROOT_PACKAGE_NAME } ?: "", size)
+private fun readClass(data: String, size: Long) = ClassNode(data, size)
+
+private fun readMethod(data: String, size: Long): MethodNode {
+    val fullClassName: String
+    val returnType: String?
+    val signature: String
+    val methodItems = data.split(' ')
+    when (methodItems.size) {
+        3 -> {
+            fullClassName = methodItems[0]
+            returnType = methodItems[1]
+            signature = methodItems[2]
+        }
+        2 -> {
+            fullClassName = methodItems[0]
+            returnType = null
+            signature = methodItems[1]
+        }
+        else -> throw IllegalStateException("Can't parse method info: $data")
+    }
+
+    return MethodNode(fullClassName, returnType, signature, size)
+}
+
+private fun readField(data: String, size: Long): FieldNode {
+    val fullClassName = data.takeWhile { it != ' ' }
+    val (fieldType, name) = data.drop(fullClassName.length + 1).split(' ')
+    return FieldNode(fullClassName, fieldType, name, size)
 }
