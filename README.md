@@ -20,11 +20,11 @@ plugins {
 
 Now you can call Gradle task to make report of saved size after shrinkage.
 ```shell script
-./gradlew calculateShrunkSize
+./gradlew shrinkometer
 ```
 or if your application has flavors
 ```shell script
-./gradlew calculate[flavor_name_capitalized]ShrunkSize
+./gradlew shrinkometer[flavor_name_capitalized]
 ```
 
 The report will be located in build/shrinkometer directory.
