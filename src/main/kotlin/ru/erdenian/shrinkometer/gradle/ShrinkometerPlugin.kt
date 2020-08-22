@@ -14,14 +14,8 @@ import org.gradle.api.Project
 class ShrinkometerPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        val appExtensionClass = try {
-            Class.forName("com.android.build.gradle.AppExtension") as Class<AppExtension>
-        } catch (e: ClassNotFoundException) {
-            throw GradleException("shrinkometer plugin must be used with com.android.application plugin")
-        }
-
         val app = target.extensions
-            .findByType(appExtensionClass)
+            .findByName("android") as? AppExtension
             ?: throw GradleException("shrinkometer plugin must be used with com.android.application plugin")
 
         val apkAnalyserProvider = target.providers.provider {
