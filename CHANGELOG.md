@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2020-08-22
+
 ### Changed
 - Supported Android Gradle plugin version to 3.0.0 or higher
 - Supported Gradle version to 4.1 or higher
@@ -26,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial release
 
-[Unreleased]: https://github.com/Erdenian/shrinkometer/compare/0.3.0...develop
+[Unreleased]: https://github.com/Erdenian/shrinkometer/compare/0.3.1...develop
+[0.3.1]: https://github.com/Erdenian/shrinkometer/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/Erdenian/shrinkometer/compare/0.2.1...0.3.0
 [0.2.1]: https://github.com/Erdenian/shrinkometer/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/Erdenian/shrinkometer/releases/tag/0.2.0
