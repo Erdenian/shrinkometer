@@ -4,6 +4,11 @@
 
 Gradle plugin that calculates fields, methods, classes and packages size difference before and after ProGuard or R8 shrinking.
 
+## Requirements
+
+* Android Gradle plugin 3.0.0 or higher.
+* Gradle 4.1 or higher (required by AGP 3.0.0).
+
 ## Usage
 
 Add plugin to your root build.gradle file:
