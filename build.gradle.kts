@@ -37,7 +37,7 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.11.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 
-    implementation("com.android.tools.build:gradle:4.0.1")
+    compileOnly("com.android.tools.build:gradle:3.6.0")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.1")
 }
 

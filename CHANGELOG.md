@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Supported Android Gradle plugin version to 3.0.0 or higher
+- Supported Gradle version to 4.1 or higher
+
 ## [0.3.0] - 2020-08-22
 
 ### Changed
