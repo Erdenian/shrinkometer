@@ -10,6 +10,7 @@ build:
 
 config:
   validation: true
+  warningsAsErrors: false
   # when writing own rules with new properties, exclude the property path e.g.: 'my_rule_set,.*>.*>[my_property]'
   excludes: ''
 
@@ -392,15 +393,18 @@ naming:
   MemberNameEqualsClassName:
     active: true
     ignoreOverridden: true
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
+    excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**' ]
   ObjectPropertyNaming:
     active: true
-    excludes: []
+    excludes: [ ]
     constantPattern: '[A-Za-z][_A-Za-z0-9]*'
     propertyPattern: '[A-Za-z][_A-Za-z0-9]*'
     privatePropertyPattern: '(_)?[A-Za-z][_A-Za-z0-9]*'
   PackageNaming:
     active: true
-    excludes: []
+    excludes: [ ]
     packagePattern: '[a-z]+(\.[a-z][A-Za-z0-9]*)*'
   TopLevelPropertyNaming:
     active: true
@@ -639,17 +643,21 @@ style:
     allowedNames: '(_|ignored|expected|serialVersionUID)'
   UseArrayLiteralsInAnnotations:
     active: true
+  UseCheckNotNull:
+    active: true
   UseCheckOrError:
     active: false
   UseDataClass:
     active: true
-    excludeAnnotatedClasses: []
+    excludeAnnotatedClasses: [ ]
     allowVars: false
   UseEmptyCounterpart:
     active: true
   UseIfInsteadOfWhen:
     active: true
   UseRequire:
+    active: true
+  UseRequireNotNull:
     active: true
   UselessCallOnNotNull:
     active: true
@@ -659,5 +667,5 @@ style:
     active: true
   WildcardImport:
     active: true
-    excludes: []
+    excludes: [ ]
     excludeImports: []

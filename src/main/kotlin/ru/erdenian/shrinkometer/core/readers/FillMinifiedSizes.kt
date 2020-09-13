@@ -47,8 +47,10 @@ private fun List<FieldNode>.fillMinifiedSizes(releaseFields: MutableList<FieldNo
     } else {
         if (debugField.type != releaseField.type) log(
             "%s.%s field type changed: %s -> %s",
-            debugField.fullClassName, debugField.name,
-            debugField.type, releaseField.type
+            debugField.fullClassName,
+            debugField.name,
+            debugField.type,
+            releaseField.type
         )
 
         releaseFields.remove(releaseField)
@@ -68,8 +70,10 @@ private fun List<MethodNode>.fillMinifiedSizes(releaseMethods: MutableList<Metho
     } else {
         if (debugMethod.returnType != releaseMethod.returnType) log(
             "%s.%s method return type changed: %s -> %s",
-            debugMethod.fullClassName, debugMethod.signature,
-            debugMethod.returnType, releaseMethod.returnType
+            debugMethod.fullClassName,
+            debugMethod.signature,
+            debugMethod.returnType,
+            releaseMethod.returnType
         )
 
         releaseMethods.remove(releaseMethod)

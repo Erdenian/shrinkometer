@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     `java-gradle-plugin`
     kotlin("jvm") version "1.3.72"
-    id("io.gitlab.arturbosch.detekt") version "1.11.2"
+    id("io.gitlab.arturbosch.detekt") version "1.13.1"
     id("com.gradle.plugin-publish") version "0.12.0"
 }
 
@@ -34,11 +34,11 @@ tasks.withType<KotlinCompile>().configureEach {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.11.2")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.13.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
 
     compileOnly("com.android.tools.build:gradle:3.6.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
 }
 
 detekt {
