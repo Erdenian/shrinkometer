@@ -43,12 +43,12 @@ jobs:
         with:
           java-version: 14
       - name: Unit Test
-        run: ./gradlew test
+        run: ./gradlew :shrinkometer:test
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: Unit Test
-          path: "build/reports/tests/"
+          path: "shrinkometer/build/reports/tests/"
           if-no-files-found: error
 
   build:
@@ -66,12 +66,12 @@ jobs:
         with:
           java-version: 14
       - name: Assemble
-        run: ./gradlew assemble
+        run: ./gradlew :shrinkometer:assemble
       - uses: actions/upload-artifact@v2
         if: success()
         with:
           name: Assemble
-          path: "build/libs"
+          path: "shrinkometer/build/libs"
           if-no-files-found: error
 
   publish:
@@ -92,4 +92,4 @@ jobs:
         with:
           java-version: 14
       - name: Publish
-        run: ./gradlew publishPlugins
+        run: ./gradlew :shrinkometer:publishPlugins

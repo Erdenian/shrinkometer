@@ -10,6 +10,7 @@ build:
 
 config:
   validation: true
+  warningsAsErrors: false
   # when writing own rules with new properties, exclude the property path e.g.: 'my_rule_set,.*>.*>[my_property]'
   excludes: ''
 
@@ -17,11 +18,18 @@ processors:
   active: true
   exclude:
   # - 'DetektProgressListener'
+  # - 'KtFileCountProcessor'
+  # - 'PackageCountProcessor'
+  # - 'ClassCountProcessor'
   # - 'FunctionCountProcessor'
   # - 'PropertyCountProcessor'
-  # - 'ClassCountProcessor'
-  # - 'PackageCountProcessor'
-  # - 'KtFileCountProcessor'
+  # - 'ProjectComplexityProcessor'
+  # - 'ProjectCognitiveComplexityProcessor'
+  # - 'ProjectLLOCProcessor'
+  # - 'ProjectCLOCProcessor'
+  # - 'ProjectLOCProcessor'
+  # - 'ProjectSLOCProcessor'
+  # - 'LicenseHeaderLoaderExtension'
 
 console-reports:
   active: true
@@ -45,6 +53,7 @@ comments:
   AbsentOrWrongFileLicense:
     active: false
     licenseTemplateFile: 'license.template'
+    licenseTemplateIsRegex: false
   CommentOverPrivateFunction:
     active: false
   CommentOverPrivateProperty:
@@ -99,9 +108,14 @@ complexity:
   MethodOverloading:
     active: true
     threshold: 6
+  NamedArguments:
+    active: false
+    threshold: 3
   NestedBlockDepth:
     active: true
     threshold: 4
+  ReplaceSafeCallChainWithRun:
+    active: false
   StringLiteralDuplication:
     active: true
     excludes: ['**/test*/**', '**/androidTest*/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
@@ -126,6 +140,10 @@ coroutines:
   GlobalCoroutineUsage:
     active: true
   RedundantSuspendModifier:
+    active: true
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunWithFlowReturnType:
     active: true
 
 empty-blocks:
@@ -172,6 +190,8 @@ exceptions:
     active: true
     excludes: ['**/test*/**', '**/androidTest*/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
   NotImplementedDeclaration:
+    active: true
+  ObjectExtendsThrowable:
     active: true
   PrintStackTrace:
     active: true
@@ -228,6 +248,12 @@ formatting:
   autoCorrect: false
   AnnotationOnSeparateLine:
     active: false
+    autoCorrect: true
+  AnnotationSpacing:
+    active: true
+    autoCorrect: true
+  ArgumentListWrapping:
+    active: true
     autoCorrect: true
   ChainWrapping:
     active: true
@@ -304,6 +330,9 @@ formatting:
     active: true
     autoCorrect: true
     indentSize: 4
+  SpacingAroundAngleBrackets:
+    active: true
+    autoCorrect: true
   SpacingAroundColon:
     active: true
     autoCorrect: true
@@ -329,6 +358,9 @@ formatting:
     active: true
     autoCorrect: true
   SpacingAroundRangeOperator:
+    active: true
+    autoCorrect: true
+  SpacingAroundUnaryOperator:
     active: true
     autoCorrect: true
   SpacingBetweenDeclarationsWithAnnotations:
@@ -385,6 +417,7 @@ naming:
     ignoreOverridden: true
   InvalidPackageDeclaration:
     active: true
+    excludes: ['*.kts']
     rootPackage: ''
   MatchingDeclarationName:
     active: true
@@ -392,6 +425,11 @@ naming:
   MemberNameEqualsClassName:
     active: true
     ignoreOverridden: true
+  NoNameShadowing:
+    active: true
+  NonBooleanPropertyPrefixedWithIs:
+    active: true
+    excludes: []
   ObjectPropertyNaming:
     active: true
     excludes: []
@@ -439,13 +477,19 @@ performance:
 
 potential-bugs:
   active: true
+  CastToNullableType:
+    active: true
   Deprecation:
+    active: true
+  DontDowncastCollectionTypes:
     active: true
   DuplicateCaseInWhenExpression:
     active: true
   EqualsAlwaysReturnsTrueOrFalse:
     active: true
   EqualsWithHashCodeExist:
+    active: true
+  ExitOutsideMain:
     active: true
   ExplicitGarbageCollectionCall:
     active: true
@@ -475,6 +519,7 @@ potential-bugs:
     active: true
   MissingWhenCase:
     active: true
+    allowElseExpression: true
   NullableToStringCall:
     active: true
   RedundantElseInWhen:
@@ -485,11 +530,15 @@ potential-bugs:
     active: true
   UnnecessarySafeCall:
     active: true
+  UnreachableCatchBlock:
+    active: true
   UnreachableCode:
     active: true
   UnsafeCallOnNullableType:
     active: true
   UnsafeCast:
+    active: true
+  UnusedUnaryOperator:
     active: true
   UselessPostfixExpression:
     active: true
@@ -498,6 +547,8 @@ potential-bugs:
 
 style:
   active: true
+  ClassOrdering:
+    active: false
   CollapsibleIfStatements:
     active: true
   DataClassContainsFunctions:
@@ -505,6 +556,9 @@ style:
     conversionFunctionPrefix: 'to'
   DataClassShouldBeImmutable:
     active: true
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 3
   EqualsNullCall:
     active: true
   EqualsOnSignatureLine:
@@ -529,6 +583,7 @@ style:
     methods: ['kotlin.io.println', 'kotlin.io.print']
   ForbiddenPublicDataClass:
     active: true
+    excludes: ['**']
     ignorePackages: ['*.internal', '*.internal.*']
   ForbiddenVoid:
     active: true
@@ -537,12 +592,15 @@ style:
   FunctionOnlyReturningConstant:
     active: true
     ignoreOverridableFunction: true
+    ignoreActualFunction: true
     excludedFunctions: 'describeContents'
     excludeAnnotatedFunction: ['dagger.Provides']
   LibraryCodeMustSpecifyReturnType:
     active: true
+    excludes: ['**']
   LibraryEntitiesShouldNotBePublic:
     active: true
+    excludes: ['**']
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 1
@@ -559,6 +617,7 @@ style:
     ignoreNamedArgument: true
     ignoreEnums: false
     ignoreRanges: false
+    ignoreExtensionFunctions: true
   MandatoryBracesIfStatements:
     active: false
   MandatoryBracesLoops:
@@ -573,6 +632,8 @@ style:
   MayBeConst:
     active: true
   ModifierOrder:
+    active: true
+  MultilineLambdaItParameter:
     active: true
   NestedClassesVisibility:
     active: true
@@ -591,6 +652,8 @@ style:
   ProtectedMemberInFinalClass:
     active: true
   RedundantExplicitType:
+    active: true
+  RedundantHigherOrderMapUsage:
     active: true
   RedundantVisibilityModifierRule:
     active: true
@@ -622,6 +685,8 @@ style:
     active: true
   UnnecessaryApply:
     active: true
+  UnnecessaryFilter:
+    active: true
   UnnecessaryInheritance:
     active: true
   UnnecessaryLet:
@@ -639,6 +704,8 @@ style:
     allowedNames: '(_|ignored|expected|serialVersionUID)'
   UseArrayLiteralsInAnnotations:
     active: true
+  UseCheckNotNull:
+    active: true
   UseCheckOrError:
     active: false
   UseDataClass:
@@ -647,9 +714,17 @@ style:
     allowVars: false
   UseEmptyCounterpart:
     active: true
+  UseIfEmptyOrIfBlank:
+    active: true
   UseIfInsteadOfWhen:
     active: true
+  UseIsNullOrEmpty:
+    active: true
+  UseOrEmpty:
+    active: true
   UseRequire:
+    active: true
+  UseRequireNotNull:
     active: true
   UselessCallOnNotNull:
     active: true
