@@ -1,2 +1,6 @@
 rootProject.name = "shrinkometer"
-include(":shrinkometer")
+include(":testapp")
+
+pluginManagement {
+    includeBuild("shrinkometer")
+}

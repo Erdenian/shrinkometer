@@ -25,6 +25,11 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
+repositories {
+    google()
+    jcenter()
+}
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 
